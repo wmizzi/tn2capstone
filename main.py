@@ -1,10 +1,10 @@
-from IperfClient import IperfClient
-from jsonprocesser import jsonprocesser
-from pingClient import pingClient
+from modules import IperfClient
+from lib import jsonprocesser
+#from pingClient import pingClient
 
-upload_file = jsonprocesser()
+upload_file = jsonprocesser.jsonprocesser()
 
-iperf_test = IperfClient('130.56.253.43',5201)
+iperf_test = IperfClient.IperfClient('130.56.253.43',5201)
 #iperf_test.setDownload()
 #iperf_test.setProtocol('tcp')
 
