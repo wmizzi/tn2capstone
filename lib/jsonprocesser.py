@@ -15,7 +15,7 @@ class jsonprocesser:
         #filename = client_mac + timestamp + '.json'
         self.filename = os.path.abspath('results/' + self.client_mac + self.timestamp + '.json')
         
-        data = json.dumps({"UserInfo":{"user id":-1,"timestamp":-1,"ip":"null"},
+        data = json.dumps({"UserInfo":{"user id":self.client_mac,"timestamp":self.timestamp,"ip":"null"},
                            "IPERF":{"TCP":{"upload":-1,"download":-1},"UDP":{"upload":-1,"download":-1,"packetloss":-1,"jitter":-1}},
                            "HTTP":{"GET":{"site1":-1,"site2":-1,"site3":-1,"avg":-1},"POST":{"site1":-1,"site2":-1,"site3":-1,"avg":-1}},
                            "TRACEROUTE":{}})
