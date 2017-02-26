@@ -18,7 +18,7 @@ def traceroute(hostname):
     while True:
         recvsock = socket.socket(socket.AF_INET, socket.SOCK_RAW, icmp)
         sendsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, udp)
-        sendsock = setsockopt(socket.SOL_IP, socket.IP_TTL, ttl)
+        sendsock.setsockopt(socket.SOL_IP, socket.IP_TTL, ttl)
         recvsock.bind(("",port))
         sendsock.sento("",(hostname,port))
         currentaddr = None
