@@ -29,7 +29,7 @@ while True:
         
     tempfile = open('temp.json','rb')
     info = json.load(tempfile)
-    info["UserInfo"]["ip"] = addr[0] # store ip address of sender
+    info["UserInfo"]["ip"] = addr[0] # store ip address of sendercd
     
     last_addr = '0.0.0.0' # placeholder for first iteration
     for hop in range(1,MAX_HOPS):
