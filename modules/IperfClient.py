@@ -83,10 +83,12 @@ class IperfClient:
                 command = command + ' -R'
             command = command + ' -J'
             print command
-            proc = subprocess.Popen(command,stdout=subprocess.PIPE)
-            output = proc.stdout.read()
-            data = json.loads(output)
-            #print output
+            if platform.system() == 'Windows':
+                proc = subprocess.Popen(command,stdout=subprocess.PIPE)
+                output = proc.stdout.read()
+            else:
+                output = os.system(command)
+           #print output
         except:
             print 'Failed to run Iperf - server may be busy - using next port'
             while self.port < 5209:
