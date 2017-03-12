@@ -3,6 +3,7 @@ import json
 import time
 import socket
 import numpy
+from threading import Thread
 
 class UDPClient:
     
@@ -31,11 +32,38 @@ class UDPClient:
         self.mean_up_IAT = -1
         self.tot_up_time = -1
         
+        # two way test
+        
+        self.PLR_2way = -1
+        self.std_2way_lat = -1
+        self.std_2way_IAT = -1
+        self.mean_2way_lat = -1
+        self.mean_2way_IAT = -1
+        
+        self.two_way_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        
     def UDP_Reflector(self, port, packet_size, no_of_packets, packets_per_sec):
+        
         self.port = port
         self.packet_size = packet_size
         self.no_of_packets = no_of_packets
         self.packets_per_sec = packets_per_sec
+        
+        BUFFER = 2048
+        RECIEVE_IP = ''
+        receiver_thread = Thread(target=two_way_recieve, args=(self.addr, port))
+        receiver_thread.daemon = True
+        receiver_thread.start()
+        time.sleep(1)
+        send_thread = Thread(target = two_way_send, args = (self.addr, port)).start()
+        
+    def two_way_send(self, port, packet_size, no_of_packets, packets_per_sec):
+        #toDo
+        print 'test'
+        
+    def two_way_recieve(self):
+        #toDo
+        print 'test'
         
     def UDP_Download(self, port, packet_size, no_of_packets, packets_per_sec):
         self.port = port
@@ -131,7 +159,8 @@ class UDPClient:
         self.mean_up_IAT = results[5]
         self.tot_up_time = results[1]
         
-        
+    def get_results(self):
+        return {'PLR_up':self.PLR_up, 'PLR_dwn': self.PLR_dwn, 'PLR_2way':self.PLR_2way}
         
         
         

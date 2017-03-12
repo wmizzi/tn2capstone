@@ -1,6 +1,7 @@
 import subprocess
 import os
 import json
+import platform
 
 class IperfClient:
     #This class sets variables for iperf tests as well assert
@@ -62,10 +63,14 @@ class IperfClient:
         
     def run(self):
         try:
-            filepath = os.path.dirname(os.path.abspath(__file__))
             
             command = ""
-            command = command + filepath + '\iperf3.exe'
+            
+            if platform.system() == 'Windows':
+                filepath = os.path.dirname(os.path.abspath(__file__))
+                command = command + filepath + '\iperf3.exe'
+            else:
+                command = command + 'sudo iperf3'
             command = command + ' -c ' + self.addr
             command = command + ' -p ' + str(self.port) 
             command = command + ' -t ' + str(self.runtime)
