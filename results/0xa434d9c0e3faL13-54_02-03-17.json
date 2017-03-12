@@ -1,0 +1,1 @@
+{"IPERF": {"UDP": {"download": -1, "jitter": -1, "upload": -1, "packetloss": -1}, "TCP": {"download": 8742196.927059, "upload": -1}}, "HTTP": {"POST": {"avg": -1, "site2": -1, "site3": -1, "site1": -1}, "GET": {"avg": -1, "site2": -1, "site3": -1, "site1": -1}}, "UserInfo": {"timestamp": "13-54_02-03-17", "user id": "0xa434d9c0e3faL", "ip": "null"}, "TRACEROUTE": {}}
