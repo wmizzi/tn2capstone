@@ -91,7 +91,7 @@ class IperfClient:
            #print output
         except:
             print 'Failed to run Iperf - server may be busy - using next port'
-            while self.port < 5209:
+            while self.port < 5202:
                 self.port=self.port+1
                 self.run()
         
@@ -113,7 +113,7 @@ class IperfClient:
                 
         except:
             print 'error running iPerf - no data found'
-            while self.port < 5209:
+            while self.port < 5202:
                 self.port=self.port+1
                 self.run()
         
