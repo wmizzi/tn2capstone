@@ -55,6 +55,9 @@ class IperfClient:
         
     def setRuntime(self,runtime):
         self.runtime = runtime   
+    
+    def setBandwidth(self,bandwidth):
+        self.bandwidth = bandwidth
     # Runs iperf session
     def openConnection(self):
         #PLACE HOLDER
@@ -88,9 +91,11 @@ class IperfClient:
                 output = proc.stdout.read()
             else:
                 output = os.system(command)
-           #print output
-        except:
-            print 'Failed to run Iperf - server may be busy - using next port'
+          
+            data = json.loads(output)
+            
+        except Exception:
+            print 'Error - trying next port'
             while self.port < 5202:
                 self.port=self.port+1
                 self.run()
@@ -102,20 +107,20 @@ class IperfClient:
         
             if self.protocol == 'tcp' and self.directiontag == 'up':
                 self.tcpup = data["end"]["sum_received"]["bits_per_second"]
-            if self.protocol == 'udp' and self.directiontag == 'down':
+            if self.protocol == 'udp' and self.directiontag == 'up':
                 self.udpdown = data["end"]["sum"]["bits_per_second"]
                 self.udpjitterdown = data["end"]["sum"]["jitter_ms"]
                 self.udppacketlossdown = data["end"]["sum"]["lost_percent"]
-            if self.protocol == 'udp' and self.directiontag == 'up':
+            if self.protocol == 'udp' and self.directiontag == 'down':
                 self.udpup = data["end"]["sum"]["bits_per_second"]
                 self.udpjitterup = data["end"]["sum"]["jitter_ms"]
                 self.udppacketlossup = data["end"]["sum"]["lost_percent"]
                 
         except:
             print 'error running iPerf - no data found'
-            while self.port < 5202:
-                self.port=self.port+1
-                self.run()
+            #while self.port < 5202:
+            #    self.port=self.port+1
+            #    self.run()
         
             
     def getResults(self):

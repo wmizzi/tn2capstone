@@ -10,10 +10,13 @@ class jsonprocesser:
     def __init__(self):
         
         self.client_mac = str(hex(uuid.getnode()))
-        self.timestamp = datetime.datetime.now().strftime("%H-%M_%d-%m-%y")
+        self.filestamp = datetime.datetime.now().strftime("%H-%M_%d-%m-%y")
+        self.timestamp = str(datetime.datetime.utcnow())
+        print self.timestamp
+        
         
         #filename = client_mac + timestamp + '.json'
-        self.filename = os.path.abspath('results/' + self.client_mac + self.timestamp + '.json')
+        self.filename = os.path.abspath('results/' + self.client_mac + self.filestamp + '.json')
         
         data = json.dumps({"UserInfo":{"user id":self.client_mac,"timestamp":self.timestamp,"ip":"null","lat":0,"lon":0},
                            "SpeedTests":{"TCP":{"upload":-1,"download":-1},
@@ -85,7 +88,7 @@ class jsonprocesser:
         jsonFile2.write(json.dumps(data))
         
     
-    def json_update_420p(self, udp_results):
+    def json_update_480p(self, udp_results):
         
         jsonFile = open(self.filename,"r+")
         data = json.load(jsonFile)
@@ -151,7 +154,7 @@ class jsonprocesser:
         jsonFile2.write(json.dumps(data))
 
 
-    def json_update_high_VOIP(self, udp_results):
+    def json_update_low_VOIP(self, udp_results):
         
         jsonFile = open(self.filename,"r+")
         data = json.load(jsonFile)
