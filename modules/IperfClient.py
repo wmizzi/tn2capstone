@@ -90,7 +90,7 @@ class IperfClient:
                 proc = subprocess.Popen(command,stdout=subprocess.PIPE)
                 output = proc.stdout.read()
             else:
-                output = os.system(command)
+                output = os.popen(command).read()
           
             data = json.loads(output)
             

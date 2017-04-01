@@ -7,6 +7,11 @@ import time
 #from pingClient import pingClient
 
 '''
+
+***** NOTES ****
+
+Add initial setup including simple ping, DNS etc (maybe so popular website response times)
+
 PORT ALLOCATIONS
 ***************
 
