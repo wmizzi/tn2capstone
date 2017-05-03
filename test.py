@@ -1,28 +1,24 @@
-
-import time
-import pprint
+from modules import HTTPClient
 import numpy
-length_test = 20
-padding = ''
-results = []
-for j in range(1,20):
-    padding = padding + str(1)
+from modules import UDPClient
+from lib import jsonprocesser
+from modules import IperfClient
+from lib import jsonprocesser
+from modules import UDPClient
+from threading import Thread
+import time
 
-for i in range(1,20):
-    time.sleep(0.01)
-    snt_time = time.time()
-    command = str(i) + ',' + str(time.time()) +',' + padding
-    print command
-    data = command.split(',')
-    recv_time = float(time.time()) + 0.3
-    latency = recv_time - float(data[1])
-    results.append([int(data[0]) , data[1] , recv_time , latency])
-    
-print results
-print type(results)
-results.sort(reverse = True)
-print results
-results.sort()
-lat = numpy.asarray(results)
-print lat[:][2]
+#HTTP_check = HTTPClient.HttpClient()
 
+upload_file = jsonprocesser.jsonprocesser()
+iperf_test = IperfClient.IperfClient('130.56.253.43',5201)
+udp_test = UDPClient.UDPClient('130.56.253.43')
+
+
+#print 'Starting 480p Video test'
+#result = udp_test.UDP_Bursty_Download(5206, 1000, 4000, 0.04, 7)
+#upload_file.json_update_480p(result)
+#time.sleep(1)
+#print result
+
+upload_file.json_upload('130.56.253.43', 5208)

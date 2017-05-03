@@ -57,12 +57,12 @@ class UDPClient:
         message = ''
         IDT = 1.0 / packets_per_sec
         
-        for j in range(45,packet_size):
+        for j in range(78,packet_size):
             padding = padding + str(1)
         for i in range(1,no_of_packets + 1):
             time.sleep(IDT)
             sendtime = str('%.3f' % time.time())
-            message = str('%08d' % i) + ',' + sendtime + ',' + padding
+            message = str(i) + ',' + sendtime + ',' + padding
             self.two_way_socket.sendto(message, addr)
         time.sleep(2)
     
@@ -86,6 +86,7 @@ class UDPClient:
             except Exception:
                 break
             splitdata = data.split(',')
+            #print splitdata
             time_rcvd = time.time()
             latency.append(time_rcvd - float(splitdata[1]))
             rcvd_time.append(time_rcvd)
@@ -227,65 +228,6 @@ class UDPClient:
         return {"PLR" : self.PLR_up , "jitter_lat" : self.std_up_lat , "jitter_iat" : self.std_up_IAT}
         
         
-    def UDP_Bursty_Upload_VBR(self, port, handler_port, packet_size, no_of_packets, burst_length_lower, burst_length_upper, backoff_lower,backoff_upper):
-        
-        BUFFER = 2048
-        
-        upload_handler = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        up_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        
-        handler_addr = (self.addr , handler_port)
-        upload_addr = (self.addr , port)
-        
-        upload_handler.connect(handler_addr)
-        
-        command = str(packet_size) + ',' + str(no_of_packets)
-        
-        upload_handler.send(command)
-        
-        packet_count_snd = 0
-        
-        padding = ''
-        
-        
-        for j in range(78, packet_size):
-            padding = padding + str(1) # pads packet to make it required size
-        start = time.time()
-        while packet_count_snd < no_of_packets:
-            #backoff = numpy.argmax(numpy.random.multinomial(1,time_profile))/100.0
-            backoff = numpy.random.uniform(backoff_lower,backoff_upper)/100.0
-            #backoff = numpy.random.exponential(backoff_time)
-            burst_length = numpy.random.uniform(burst_length_lower,burst_length_upper)
-            #burst_length = numpy.argmax(numpy.random.multinomial(1,[306./11977,186./11977,310./11977,181./11977,171./11977,2306./11977,3131./11977,2147./11977,1482./11977,1665./11977,92./11977]))
-            burst = 0
-            #print backoff
-            while burst < burst_length and packet_count_snd < no_of_packets:
-                #time.sleep(0.001)
-                command = str(packet_count_snd) + ',' + str(time.time()) + ',' + padding
-                up_sock.sendto(command,upload_addr)
-                packet_count_snd = packet_count_snd + 1
-                #print packet_count_snd
-                burst = burst + 1
-            time.sleep(backoff)
-        
-        stop = time.time()
-        bits = 8 * packet_size * no_of_packets
-        print bits/(stop-start)
-        test_data = upload_handler.recv(BUFFER)
-        
-        upload_handler.close()
-        up_sock.close()
-        
-        results = test_data.split(',')
-        
-        self.PLR_up = 1 - float(results[0]) / no_of_packets
-        self.std_up_lat = results[3]
-        self.std_up_IAT = results[4]
-        self.mean_up_IAT = results[5]
-        self.tot_up_time = results[1]
-        
-        return {"PLR" : self.PLR_up , "jitter_lat" : self.std_up_lat , "jitter_iat" : self.std_up_IAT}
-    
     def UDP_Bursty_Upload(self, port, handler_port, packet_size, no_of_packets, burst_length_lower, burst_length_upper, time_profile):
         
         BUFFER = 2048
@@ -340,15 +282,15 @@ class UDPClient:
         
         return {"PLR" : self.PLR_up , "jitter_lat" : self.std_up_lat , "jitter_iat" : self.std_up_IAT}
         
-    def UDP_Bursty_Download(self, port, packet_size, no_of_packets, backoff, burst_length):
+    def UDP_Bursty_Download(self, port, packet_size, no_of_packets, backoff, probability_of_burst):
             self.port = port
             self.packet_size = packet_size
             self.no_of_packets = no_of_packets
             
             dwn_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             
-            command = str(self.packet_size) + ',' + str(self.no_of_packets) + ',' + str(backoff) + ',' + str(burst_length)
-            dwn_sock.sendto(command, (self.addr,port)) # send command with packets to be generated and sent back
+            command = str(self.packet_size) + ',' + str(self.no_of_packets) + ',' + str(backoff) + ',' + str(probability_of_burst)
+            dwn_sock.sendto(command, (self.addr,self.port)) # send command with packets to be generated and sent back
             dwn_sock.settimeout(2) # No packet received in 2 seconds will end service
             
             BUFFER = 2048
@@ -356,12 +298,10 @@ class UDPClient:
             rcvd_time = []
             #starttime = time.time()
             packets_rcvd = 0
-            while True: 
+            while True: #starttime + no_of_packets/packets_per_sec + 5 - time.time() > 0:
                 try:
                     data, addr = dwn_sock.recvfrom(BUFFER)
-                    #print 'rec'
                 except Exception:
-                    #print 'timeout'
                     break
                 time_rcvd = time.time()
                 latency.append(time_rcvd - float((data.split(',')[1])))
@@ -426,4 +366,4 @@ class UDPClient:
             time.sleep(5 + 2 * no_of_packets / packets_per_sec)
             self.two_way_socket.close()
             
-            return {"PLR" : 1. - float(self.packets_rcvd_2way) / no_of_packets, "jitter_lat" : self.std_2way_lat, "jitter_iat" : self.std_2way_IAT, "latency" : self.mean_2way_lat}
+            return {"PLR" : 1. - float(self.packets_rcvd_2way) / no_of_packets, "jitter_lat" : self.std_2way_lat, "jitter_iat" : self.std_2way_IAT, "latency" : self.mean_2way_lat} 

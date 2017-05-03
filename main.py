@@ -24,7 +24,7 @@ FILEHANDLER : 5208
 Transfer Specifications
 *****************
 
-4k stream (40Mbps 30fps)
+4k stream (16Mbps 30fps)
     Packet size 1392 bytes(from youtube)
     Packets per second 3592
     Burst length = 10
@@ -55,7 +55,7 @@ Screensharing
     Packets 625 packets per second
     1250 packets
 
-Standard_video_calling
+Standard_video_callin
     Bursty upload data (480kbps)
     Mean packet size 800 bytes
     Uniform dist of burst length [0,5]
@@ -113,7 +113,7 @@ iperf_test.setUpload()
 iperf_test.run()
 
 results = iperf_test.getResults()
-
+print results
 upload_file.json_update_tcp(results)
 time.sleep(1)
 
@@ -121,17 +121,18 @@ time.sleep(1)
 
 print 'Starting 4k Video test'
 
-result = udp_test.UDP_Bursty_Download(5206, 1392, 10000, 0.00278, 10)
+result = udp_test.UDP_Bursty_Download(5206, 1100, 10000, 0.006, 17)
 upload_file.json_update_4k(result)
 time.sleep(1)
-
+print result
 # 1080p test
 
 print 'Starting 1080p Video test'
 
-result = udp_test.UDP_Bursty_Download(5206, 1392, 10000, 0.011136, 8)
+result = udp_test.UDP_Bursty_Download(5206, 1000, 10000, 0.05, 11)
 upload_file.json_update_1080p(result)
 time.sleep(1)
+print result
 
 
 #720p test
@@ -164,7 +165,7 @@ time.sleep(1)
 # HD video upload
 
 print 'Starting HD video upload'
-result = udp_test.UDP_Bursty_Upload_Uniform(5205,5204,1162,5000, 3, 9, 1, 7)
+result = udp_test.UDP_Bursty_Upload_VBR(5205,5204,1162,5000, 3, 9, 1, 7)
 upload_file.json_update_hd_video_calling(result)
 time.sleep(1)
 
