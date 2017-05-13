@@ -1,10 +1,12 @@
+# This program was created and written by Angus Clark for the NetHealth Project(TN2)
+# The program was last updated 9/5/2017
+
 from modules import IperfClient
 from lib import jsonprocesser
 from modules import UDPClient
 from threading import Thread
 import time
 
-#from pingClient import pingClient
 
 '''
 
@@ -24,7 +26,7 @@ FILEHANDLER : 5208
 Transfer Specifications
 *****************
 
-4k stream (16Mbps 30fps)
+4k stream (20Mbps 30fps)
     Packet size 1392 bytes(from youtube)
     Packets per second 3592
     Burst length = 10
@@ -98,6 +100,7 @@ Online Gaming (NEED TO TEST THIS STILL) ~ 192 Kbps
 
 '''
 # Initiate Upload Objects
+start = time.time()
 
 upload_file = jsonprocesser.jsonprocesser()
 iperf_test = IperfClient.IperfClient('130.56.253.43',5201)
@@ -124,15 +127,15 @@ print 'Starting 4k Video test'
 result = udp_test.UDP_Bursty_Download(5206, 1100, 10000, 0.006, 17)
 upload_file.json_update_4k(result)
 time.sleep(1)
-print result
+#print result
 # 1080p test
 
 print 'Starting 1080p Video test'
 
-result = udp_test.UDP_Bursty_Download(5206, 1000, 10000, 0.05, 11)
+result = udp_test.UDP_Bursty_Download(5206, 1000, 10000, 0.011, 11)
 upload_file.json_update_1080p(result)
 time.sleep(1)
-print result
+#print result
 
 
 #720p test
@@ -165,9 +168,11 @@ time.sleep(1)
 # HD video upload
 
 print 'Starting HD video upload'
-result = udp_test.UDP_Bursty_Upload_VBR(5205,5204,1162,5000, 3, 9, 1, 7)
+time_profile = [0,3./9,1./9,1./9,2./9,2./9,1./9]
+result = udp_test.UDP_Bursty_Upload(5205, 5204, 1100, 5000, 0, 10,time_profile)
 upload_file.json_update_hd_video_calling(result)
 time.sleep(1)
+
 
 
 # High Quality VoIP
@@ -186,7 +191,15 @@ time.sleep(1)
 
 # Upload file to server
 
+print 'Starting gaming simulation'
+result = udp_test.UDP_Reflector(5209, 500, 500, 200)
+upload_file.json_update_gaming(result)
+time.sleep(1)
+
+
 upload_file.json_upload('130.56.253.43', 5208)
 
 
 upload_file.print_json()
+print 'time taken:'
+print time.time()-start

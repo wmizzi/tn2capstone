@@ -21,10 +21,10 @@ while True:
     #time.sleep(1)
     #splitdata = data.split(',')
     
-    packet_size =  1100
+    packet_size =  1000
     no_of_packets = 10000
-    backoff = 0.006
-    burst_length = 17
+    backoff = 0.05
+    burst_length = 5
     snt_time = 0
     packets_sent = 0
     bursts_sent = 0
@@ -52,7 +52,7 @@ while True:
         bursts_sent = bursts_sent + 1
         while burst < this_burst and packets_sent < no_of_packets:
             snt_time = time.time()
-            sock.sendto(str((str('%08d' % packets_sent), snt_time, padding)), ('100.100.100.100',5000))
+            sock.sendto(str((str('%08d' % packets_sent), snt_time, padding)), ('10.250.250.250',5000))
             packets_sent = packets_sent + 1
             burst = burst + 1
     

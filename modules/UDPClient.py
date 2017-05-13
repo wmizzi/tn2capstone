@@ -1,3 +1,6 @@
+# This class was created by Angus Clark for the NetHealth Project (TN2)
+
+
 import sys
 import json
 import time
@@ -47,6 +50,10 @@ class UDPClient:
         
         self.two_way_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.two_way_socket.settimeout(0.5)
+  
+        '''
+        two_way send is a helper function of two_way_reflector
+        '''
         
     def two_way_send(self, port, packet_size, no_of_packets, packets_per_sec):
         IDT = 1.0 / packets_per_sec
@@ -65,6 +72,10 @@ class UDPClient:
             message = str('%08d' % i) + ',' + sendtime + ',' + padding
             self.two_way_socket.sendto(message, addr)
         time.sleep(2)
+        '''
+        two_way_recieve is a helper function of two_way_reflection
+        
+        '''
     
     def two_way_recieve(self):
         receive_ip = ''
@@ -94,15 +105,17 @@ class UDPClient:
         lat = numpy.asarray(latency)
         RCV = numpy.asarray(rcvd_time)
         IAT = numpy.diff(RCV)
-        
-        #print packets_rcvd
             
         self.mean_2way_lat = numpy.mean(lat)    
         self.std_2way_lat = numpy.std(lat)
         self.std_2way_IAT = numpy.std(IAT)
         self.packets_rcvd_2way = packets_rcvd
         
-        
+        '''
+        The Two way reflector  module sends packets at a CBR with the input params port that the server side script is 
+        running on, the size of the packets to be transmitted, the number of packets the stream should include,
+        and the packets per second to be transmitted
+        '''   
     def UDP_Reflector(self, port, packet_size, no_of_packets, packets_per_sec):
         
         self.two_way_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -128,6 +141,10 @@ class UDPClient:
         
         return {"PLR" : 1. - float(self.packets_rcvd_2way) / no_of_packets, "jitter_lat" : self.std_2way_lat, "jitter_iat" : self.std_2way_IAT, "latency" : self.mean_2way_lat} 
                
+        '''
+        UDP_Download_CBR is the download module  where the packet distrubution of the download stream has
+        
+        '''       
     def UDP_Download_CBR(self, port, packet_size, no_of_packets, packets_per_sec):
         self.port = port
         self.packet_size = packet_size
